@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "repo": "SauerkrautLM-MoEdernColBERT-1.5M-ONNX",
+  "runtime": "v26.11.1",
+  "platform": "darwin",
+  "arch": "arm64",
+  "results": {
+    "fp32": {
+      "passed": true,
+      "parity": "exact",
+      "graphSha256": "0180f74acd68411260f9dd28c6f518bb8b1c9176caa3dbbd965abffa6b69c883",
+      "fingerprint": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da:0180f74acd68411260f9dd28c6f518bb8b1c9176caa3dbbd965abffa6b69c883",
+      "cases": 16,
+      "numbersCompared": 379264,
+      "maxAbsoluteError": 0,
+      "maxScoreError": 0.000002082095839739395,
+      "top1Matches": 24,
+      "queries": 24
+    },
+    "fp16": {
+      "passed": true,
+      "parity": "quality",
+      "graphSha256": "f82e7a372695b82fe5de4c4a7033c538084128a2e787540f6515075ffba49d47",
+      "fingerprint": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da:f82e7a372695b82fe5de4c4a7033c538084128a2e787540f6515075ffba49d47:onnxruntime-node@1.30.0/cpu",
+      "meanTokenCosine": 0.9998575087593216,
+      "top1Agreement": 1,
+      "top5Overlap": 1
+    },
+    "q8": {
+      "passed": true,
+      "parity": "exact",
+      "graphSha256": "7d709c97fd59c8eaea361faeb20f55c7a61a9c718587f2f4d3023dcce77e8d11",
+      "fingerprint": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da:7d709c97fd59c8eaea361faeb20f55c7a61a9c718587f2f4d3023dcce77e8d11",
+      "cases": 16,
+      "numbersCompared": 379264,
+      "maxAbsoluteError": 0,
+      "maxScoreError": 0.0000013272994259239113,
+      "top1Matches": 24,
+      "queries": 24
+    },
+    "int8": {
+      "passed": true,
+      "parity": "quality",
+      "graphSha256": "f72b690d68e4783991fa879e21a73143b98ffe93c3e2250084a1e870e5982f9d",
+      "fingerprint": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da:f72b690d68e4783991fa879e21a73143b98ffe93c3e2250084a1e870e5982f9d:onnxruntime-node@1.30.0/cpu",
+      "meanTokenCosine": 0.99434421589702,
+      "top1Agreement": 1,
+      "top5Overlap": 0.9666666666666667
+    }
+  }
+}

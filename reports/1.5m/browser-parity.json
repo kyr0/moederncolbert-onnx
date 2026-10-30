@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "browser": "153.0.8010.12",
+  "backend": "WASM CPU, one thread",
+  "results": {
+    "fp32": {
+      "passed": true,
+      "parity": "exact",
+      "graphSha256": "0180f74acd68411260f9dd28c6f518bb8b1c9176caa3dbbd965abffa6b69c883",
+      "fingerprint": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da:0180f74acd68411260f9dd28c6f518bb8b1c9176caa3dbbd965abffa6b69c883",
+      "cases": 16,
+      "numbersCompared": 379264,
+      "maxAbsoluteError": 9.71369445323944e-7,
+      "maxScoreError": 0.000007244105210801877,
+      "top1Matches": 24,
+      "queries": 24
+    },
+    "fp16": {
+      "passed": true,
+      "parity": "quality",
+      "graphSha256": "f82e7a372695b82fe5de4c4a7033c538084128a2e787540f6515075ffba49d47",
+      "fingerprint": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da:f82e7a372695b82fe5de4c4a7033c538084128a2e787540f6515075ffba49d47:onnxruntime-web@1.30.0/wasm",
+      "meanTokenCosine": 0.9999091239493083,
+      "top1Agreement": 1,
+      "top5Overlap": 1
+    },
+    "q8": {
+      "passed": true,
+      "parity": "exact",
+      "graphSha256": "7d709c97fd59c8eaea361faeb20f55c7a61a9c718587f2f4d3023dcce77e8d11",
+      "fingerprint": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da:7d709c97fd59c8eaea361faeb20f55c7a61a9c718587f2f4d3023dcce77e8d11",
+      "cases": 16,
+      "numbersCompared": 379264,
+      "maxAbsoluteError": 6.30505383014679e-7,
+      "maxScoreError": 0.000005840930834111191,
+      "top1Matches": 24,
+      "queries": 24
+    },
+    "int8": {
+      "passed": true,
+      "parity": "quality",
+      "graphSha256": "f72b690d68e4783991fa879e21a73143b98ffe93c3e2250084a1e870e5982f9d",
+      "fingerprint": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da:f72b690d68e4783991fa879e21a73143b98ffe93c3e2250084a1e870e5982f9d:onnxruntime-web@1.30.0/wasm",
+      "meanTokenCosine": 0.9913100722624952,
+      "top1Agreement": 1,
+      "top5Overlap": 0.9583333333333334
+    }
+  },
+  "ui": [
+    {
+      "precision": "fp32",
+      "topResult": "Zugspitze"
+    },
+    {
+      "precision": "fp16",
+      "topResult": "Zugspitze"
+    },
+    {
+      "precision": "q8",
+      "topResult": "Zugspitze"
+    },
+    {
+      "precision": "int8",
+      "topResult": "Zugspitze"
+    }
+  ]
+}

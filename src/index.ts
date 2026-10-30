@@ -1,6 +1,13 @@
+// Runtime-neutral core shared by the Node.js and browser entries: tokenization contract, MaxSim, encoder.
+// The ONNX session arrives through a BackendFactory, so both entries reuse one verified implementation
+// instead of two copies that could drift. VERIFIED: tests-js and the parity harness exercise it through both.
 import { Tokenizer } from '@huggingface/tokenizers';
 
-export type Precision = 'fp32' | 'q8';
+export const PRECISIONS = ['fp32', 'fp16', 'q8', 'int8', 'q4'] as const;
+export type Precision = typeof PRECISIONS[number];
+/** exact: identical vectors in every runtime; quality: runtime-specific vectors, never mixed across runtimes.
+ * VERIFIED: fp16 and int8 vectors differed by up to 0.15 between ONNX Runtime builds (contracts.py). */
+export type Parity = 'exact' | 'quality';
 export type Kind = 'query' | 'document';
 export interface RuntimeConfig {
   dimensions: number; query_length: number; max_document_length: number;
@@ -10,8 +17,7 @@ export interface RuntimeConfig {
 export interface Manifest {
   schema_version: number; model_id: string; revision: string;
   files: Record<string, { bytes: number; sha256: string }>;
-  models: Record<Precision, { file: string; bytes: number; sha256: string;
-    quantization?: { mode: string } }>;
+  models: Partial<Record<Precision, { file: string; bytes: number; sha256: string; parity: Parity }>>;
 }
 export interface TokenMatrix {
   data: Float32Array; tokenCount: number; dimensions: number;
@@ -47,7 +53,7 @@ export class Preprocessor {
       throw new Error('Expected a nonempty array of strings');
     const documentLength = options.documentLength ?? this.config.max_document_length;
     if (!Number.isInteger(documentLength) || documentLength < 3 ||
-        documentLength > this.config.max_document_length) throw new Error('documentLength must be in [3, 512]');
+        documentLength > this.config.max_document_length) throw new Error(`documentLength must be in [3, ${this.config.max_document_length}]`);
     const limit = kind === 'query' ? this.config.query_length : documentLength;
     const truncated: boolean[] = [];
     const rows = texts.map(text => {
@@ -105,9 +111,11 @@ export class ColBERTEncoder {
   private closed = false;
   private queue: Promise<unknown> = Promise.resolve();
   readonly fingerprint: string;
+  /** `runtime` names the engine, version and device, e.g. `onnxruntime-web@1.30.0/wasm`. */
   constructor(readonly preprocessor: Preprocessor, readonly manifest: Manifest,
-    readonly precision: Precision, private readonly backend: Backend) {
-    this.fingerprint = `${manifest.revision}:${manifest.models[precision].sha256}`;
+    readonly precision: Precision, private readonly backend: Backend, readonly runtime: string) {
+    const model = manifest.models[precision]!;
+    this.fingerprint = `${manifest.revision}:${model.sha256}${model.parity === 'quality' ? `:${runtime}` : ''}`;
   }
   private serial<T>(operation: () => Promise<T>): Promise<T> {
     if (this.closed) return Promise.reject(new Error('Encoder is disposed'));
@@ -172,12 +180,14 @@ export class ColBERTEncoder {
 }
 
 export async function createEncoder(load: ArtifactLoader, createBackend: BackendFactory,
-  precision: Precision = 'q8'): Promise<ColBERTEncoder> {
-  if (precision !== 'fp32' && precision !== 'q8') throw new Error('precision must be fp32 or q8');
+  precision: Precision = 'q8', runtime = 'unknown'): Promise<ColBERTEncoder> {
+  if (!PRECISIONS.includes(precision)) throw new Error(`precision must be one of ${PRECISIONS.join(', ')}`);
   const decode = (bytes: Uint8Array) => JSON.parse(new TextDecoder().decode(bytes));
   const manifest = decode(await load('manifest.json')) as Manifest;
-  if (manifest.schema_version !== 1 || !manifest.models[precision]) throw new Error('Unsupported manifest');
-  const graph = manifest.models[precision].file;
+  if (manifest.schema_version !== 1) throw new Error('Unsupported manifest');
+  const model = manifest.models[precision];
+  if (!model) throw new Error(`This folder has no ${precision} graph; available: ${Object.keys(manifest.models).join(', ')}`);
+  const graph = model.file;
   const names = [graph, 'runtime.json', 'tokenizer.json', 'tokenizer_config.json'];
   const files = await Promise.all(names.map(async name => {
     if (!/^[a-zA-Z0-9_.-]+$/.test(name)) throw new Error('Unsafe artifact filename');
@@ -188,5 +198,5 @@ export async function createEncoder(load: ArtifactLoader, createBackend: Backend
     return bytes;
   }));
   const preprocessor = new Preprocessor(decode(files[2]!), decode(files[3]!), decode(files[1]!));
-  return new ColBERTEncoder(preprocessor, manifest, precision, await createBackend(files[0]!));
+  return new ColBERTEncoder(preprocessor, manifest, precision, await createBackend(files[0]!), runtime);
 }

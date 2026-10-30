@@ -1,20 +1,22 @@
-This package includes model weights, tokenizer files, reference implementation,
-and model documentation from:
+This project converts model weights, tokenizer files and model code from:
+
 VAGOsolutions/SauerkrautLM-MoEdernColBERT-1.5M
 https://huggingface.co/VAGOsolutions/SauerkrautLM-MoEdernColBERT-1.5M
 Revision: 9d360b8b88ae11bea5784bf9012ff509fdd5c2da
 
-Upstream is licensed under the Apache License 2.0. Its full license is preserved
-in upstream/LICENSE and artifacts/MODEL-LICENSE.txt. Upstream notices and source
-headers are preserved in upstream/. Converted ONNX artifacts are derivatives of
-these model weights and remain subject to that license.
+VAGOsolutions/SauerkrautLM-MoEdernColBERT-27M
+https://huggingface.co/VAGOsolutions/SauerkrautLM-MoEdernColBERT-27M
+Revision: d2b7b1feaaac1bf87510ca9525208c3daeabcc5a
 
-src/moederncolbert_onnx/portable.py adapts the upstream inference architecture
-into tensor-only operations for ONNX. Changes include explicit attention,
-512-position RoPE buffers, dense evaluation of the eight experts with top-2
-gating, and inclusion of the separate projection head and normalization.
-That adapted file is distributed under Apache-2.0. The other original project
-code is distributed under MIT (LICENSE).
+Both are licensed under the Apache License 2.0. `make setup` downloads them into upstream/ and
+copies their LICENSE into every upload folder. Converted ONNX graphs are derivatives of these
+model weights and remain subject to that license.
 
-Dependencies retain their own licenses. ONNX Runtime runtime files copied by
-the demo build are subject to ONNX Runtime's license (third-party/ONNXRUNTIME-LICENSE.txt).
+src/moederncolbert_onnx/portable.py adapts the upstream inference architecture into tensor-only
+operations for ONNX. Changes include explicit attention, 512-position RoPE buffers, dense
+evaluation of every routed expert with the learned top-k gating, and inclusion of the separate
+projection head and normalization. That adapted file is distributed under Apache-2.0. The other
+original project code is distributed under MIT (LICENSE).
+
+Dependencies retain their own licenses. ONNX Runtime files copied by the demo build are subject to
+ONNX Runtime's license (third-party/ONNXRUNTIME-LICENSE.txt).

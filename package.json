@@ -1,11 +1,15 @@
 {
   "name": "moederncolbert-onnx",
   "version": "0.1.0",
-  "description": "MoEdernColBERT token encoding and MaxSim reranking in Node and browsers",
+  "description": "MoEdernColBERT token encoding and MaxSim reranking in Node and browsers, for the 1.5M and 27M ONNX exports",
+  "author": "Aron Homberg <info@aron-homberg.de>",
   "type": "module",
   "license": "MIT",
   "sideEffects": false,
-  "files": ["dist", "NOTICE"],
+  "files": [
+    "dist",
+    "NOTICE"
+  ],
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
   "exports": {
@@ -27,17 +31,16 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test tests-js/*.test.mjs",
     "test:node": "node scripts/verify-node.mjs",
-    "test:browser": "node scripts/verify-browser.mjs",
-    "demo:node": "node examples/node.mjs",
     "demo": "node scripts/prepare-demo.mjs && vite --host 127.0.0.1",
     "demo:build": "node scripts/prepare-demo.mjs && vite build"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "typescript": "~5.9.3",
+    "oxlint": "^1.87.0",
     "pkgroll": "^2.25.2",
-    "vite": "^7.3.0",
-    "playwright": "1.55.1"
+    "playwright": "1.55.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.0"
   },
   "dependencies": {
     "@huggingface/tokenizers": "0.2.0",

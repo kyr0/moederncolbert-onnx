@@ -1,0 +1,83 @@
+{
+  "passed": true,
+  "browser": "153.0.8010.12",
+  "backend": "WASM CPU, one thread",
+  "results": {
+    "fp32": {
+      "passed": true,
+      "parity": "exact",
+      "graphSha256": "820a8e3bcce63071e55b3a9d830223a26512242f745617ebe0fbc0aa65ae14b1",
+      "fingerprint": "d2b7b1feaaac1bf87510ca9525208c3daeabcc5a:820a8e3bcce63071e55b3a9d830223a26512242f745617ebe0fbc0aa65ae14b1",
+      "cases": 16,
+      "numbersCompared": 379264,
+      "maxAbsoluteError": 7.674098014831543e-7,
+      "maxScoreError": 0.000007224655464099783,
+      "top1Matches": 24,
+      "queries": 24
+    },
+    "fp16": {
+      "passed": true,
+      "parity": "quality",
+      "graphSha256": "c6be07070e12a07abb830b714c406b7918d23a79e1bd82b2045e041e6f185a28",
+      "fingerprint": "d2b7b1feaaac1bf87510ca9525208c3daeabcc5a:c6be07070e12a07abb830b714c406b7918d23a79e1bd82b2045e041e6f185a28:onnxruntime-web@1.30.0/wasm",
+      "meanTokenCosine": 0.9999020284965573,
+      "top1Agreement": 1,
+      "top5Overlap": 1
+    },
+    "q8": {
+      "passed": true,
+      "parity": "exact",
+      "graphSha256": "72b5ab5e2967d159f827cbdc9467daaf43d1ae3fffa3cca89dd7a82e8f0a7dff",
+      "fingerprint": "d2b7b1feaaac1bf87510ca9525208c3daeabcc5a:72b5ab5e2967d159f827cbdc9467daaf43d1ae3fffa3cca89dd7a82e8f0a7dff",
+      "cases": 16,
+      "numbersCompared": 379264,
+      "maxAbsoluteError": 0.0000010281801223754883,
+      "maxScoreError": 0.000008237699962165834,
+      "top1Matches": 24,
+      "queries": 24
+    },
+    "int8": {
+      "passed": true,
+      "parity": "quality",
+      "graphSha256": "b1dba1f901981bd3c04e32315294c98c04acd6031f99eeee8d1c3eb7bbd19ffb",
+      "fingerprint": "d2b7b1feaaac1bf87510ca9525208c3daeabcc5a:b1dba1f901981bd3c04e32315294c98c04acd6031f99eeee8d1c3eb7bbd19ffb:onnxruntime-web@1.30.0/wasm",
+      "meanTokenCosine": 0.9918677372506797,
+      "top1Agreement": 1,
+      "top5Overlap": 0.9666666666666668
+    },
+    "q4": {
+      "passed": true,
+      "parity": "exact",
+      "graphSha256": "a1f21a6c704adc691d4dada604d6b63331952b3b12ff46f40ea8243cfd15b940",
+      "fingerprint": "d2b7b1feaaac1bf87510ca9525208c3daeabcc5a:a1f21a6c704adc691d4dada604d6b63331952b3b12ff46f40ea8243cfd15b940",
+      "cases": 16,
+      "numbersCompared": 379264,
+      "maxAbsoluteError": 6.407499313354492e-7,
+      "maxScoreError": 0.000007353777071728018,
+      "top1Matches": 24,
+      "queries": 24
+    }
+  },
+  "ui": [
+    {
+      "precision": "fp32",
+      "topResult": "Zugspitze"
+    },
+    {
+      "precision": "fp16",
+      "topResult": "Zugspitze"
+    },
+    {
+      "precision": "q8",
+      "topResult": "Zugspitze"
+    },
+    {
+      "precision": "int8",
+      "topResult": "Zugspitze"
+    },
+    {
+      "precision": "q4",
+      "topResult": "Zugspitze"
+    }
+  ]
+}

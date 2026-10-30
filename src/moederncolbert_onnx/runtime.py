@@ -22,14 +22,20 @@ def maxsim(query: np.ndarray, document: np.ndarray) -> float:
 
 class Encoder:
     def __init__(self, artifacts: Path, precision: str = "q8", *, threads: int = 2):
-        if precision not in ("fp32", "q8"):
-            raise ValueError("precision must be fp32 or q8")
         manifest = json.loads((artifacts / "manifest.json").read_text())
-        filename = manifest["models"][precision]["file"]
+        if precision not in manifest["models"]:
+            raise ValueError(f"precision must be one of {', '.join(manifest['models'])}")
+        model = manifest["models"][precision]
+        filename = model["file"]
         for name in (filename, "runtime.json", "tokenizer.json", "tokenizer_config.json"):
             if sha256(artifacts / name) != manifest["files"][name]["sha256"]:
                 raise ValueError(f"Artifact checksum mismatch: {name}")
         self.preprocessor = Preprocessor(artifacts)
+        # VERIFIED: quality-contract graphs give runtime-specific vectors (contracts.py); caches must
+        # not mix runtimes.
+        self.fingerprint = f"{manifest['revision']}:{model['sha256']}" + (
+            f":onnxruntime@{ort.__version__}/cpu" if model["parity"] == "quality" else ""
+        )
         options = ort.SessionOptions()
         options.intra_op_num_threads = threads
         options.inter_op_num_threads = 1

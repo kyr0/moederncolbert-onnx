@@ -1,3 +1,6 @@
+// Browser entry: ONNX Runtime Web on single-thread WASM. VERIFIED: the parity fixture passes on this
+// configuration in Chromium for every precision of both models (make e2e).
+// Multi-threaded WASM needs cross-origin isolation headers that a static host may not send.
 import * as ort from 'onnxruntime-web/wasm';
 import { createEncoder, type Precision } from './index.js';
 
@@ -25,5 +28,5 @@ export async function createBrowserEncoder(baseUrl: string | URL,
       },
       dispose: () => session.release(),
     };
-  }, options.precision);
+  }, options.precision, `onnxruntime-web@${ort.env.versions.web}/wasm`);
 }

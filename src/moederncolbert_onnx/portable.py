@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Tensor-only inference for the pinned two-layer 1.5M checkpoint.
+"""Tensor-only inference for the pinned MoEdernColBERT checkpoints (1.5M and 27M).
 
-All eight experts are evaluated, with the learned top-2 gate preserved. This
+Every routed expert is evaluated, with the learned top-k gate preserved. This
 trades sparse compute for a small, portable graph. No Triton or custom ONNX ops.
+Dimensions come from the checkpoint's config.json; unsupported layer kinds fail.
+VERIFIED: the export matches upstream within 1.0e-6 (1.5M) and 8.6e-7 (27M), including upstream's
+grouped MoE path for 27M batches above 1,220 tokens.
 """
 
 import json
@@ -96,6 +99,7 @@ class Block(nn.Module):
         self.attention = Attention(w, prefix + ".attention", config)
         self.norm = RMSNorm(w[prefix + ".ffn_norm.weight"], config["norm_eps"])
         fp = prefix + ".ffn"
+        self.top_k = config["top_k"]
         self.router = linear(w, fp + ".router")
         self.experts = nn.ModuleList(
             [
@@ -111,7 +115,7 @@ class Block(nn.Module):
         x = self.attention(x, mask)
         z = self.norm(x)
         probs = self.router(z).softmax(-1)
-        values, indices = probs.topk(2, dim=-1)
+        values, indices = probs.topk(self.top_k, dim=-1)
         values = values / (values.sum(-1, keepdim=True) + 1e-9)
         gates = torch.zeros_like(probs).scatter(-1, indices, values)
         out = self.shared_down(F.gelu(self.shared_gate(z)) * self.shared_up(z))
@@ -120,37 +124,51 @@ class Block(nn.Module):
         return x + out
 
 
+def check_architecture(cfg: dict) -> None:
+    """Reject configs whose layers this tensor-only graph does not implement."""
+    problems = []
+    if set(cfg["layer_types"]) != {"attn_moe"} or len(cfg["layer_types"]) != cfg["num_hidden_layers"]:
+        problems.append(f"layer_types {cfg['layer_types']} (only attn_moe is implemented)")
+    if cfg.get("conv_dilations"):
+        problems.append("convolution layers")
+    if cfg["num_shared_experts"] != 1:
+        problems.append(f"{cfg['num_shared_experts']} shared experts (exactly one is implemented)")
+    if cfg["max_position_embeddings"] > 512:
+        problems.append("positions beyond 512 (the graph caps RoPE at 512)")
+    heads, kv_heads = cfg["num_attention_heads"], cfg["num_key_value_heads"]
+    if cfg["hidden_size"] % heads or heads % kv_heads or (cfg["hidden_size"] // heads) % 2:
+        problems.append("head layout (hidden/heads must be an even integer, heads divisible by kv heads)")
+    if problems:
+        raise ValueError("Unsupported checkpoint architecture: " + "; ".join(problems))
+
+
 class PortableEncoder(nn.Module):
     def __init__(self, source: Path):
         super().__init__()
         cfg = json.loads((source / "config.json").read_text())
-        if (
-            cfg["hidden_size"],
-            cfg["num_hidden_layers"],
-            cfg["hash_projections"],
-            cfg["num_routed_experts"],
-            cfg["top_k"],
-            cfg["num_shared_experts"],
-        ) != (128, 2, 16, 8, 2, 1):
-            raise ValueError("Unsupported checkpoint architecture")
+        check_architecture(cfg)
+        hidden = cfg["hidden_size"]
+        self.query_marker_id = cfg.get("query_marker_token_id", 30000)
         w = load_file(source / "model.safetensors")
         table = w["embeddings.hash_embeddings.weight"]
         self.table = nn.Embedding(table.shape[0], table.shape[1])
         self.table.weight = parameter(table)
         self.embedding_projection = linear(w, "embeddings.projection")
-        self.embedding_norm = nn.LayerNorm(128, eps=1e-5)
+        self.embedding_norm = nn.LayerNorm(hidden, eps=1e-5)
         self.embedding_norm.weight = parameter(w["embeddings.norm.weight"])
         self.embedding_norm.bias = parameter(w["embeddings.norm.bias"])
-        self.blocks = nn.ModuleList([Block(w, f"layers.{i}", cfg) for i in range(2)])
+        self.blocks = nn.ModuleList(
+            [Block(w, f"layers.{i}", cfg) for i in range(cfg["num_hidden_layers"])]
+        )
         self.norm = RMSNorm(w["norm.weight"], cfg["norm_eps"])
         head = load_file(source / "1_Dense/model.safetensors")["linear.weight"]
-        self.projection = nn.Linear(128, 128, bias=False)
+        self.projection = nn.Linear(head.shape[1], head.shape[0], bias=False)
         self.projection.weight = parameter(head)
         self.eval()
 
     def forward(self, input_ids, attention_mask):
         # Upstream explicitly overrides the query attention mask based on marker ID.
-        query = input_ids[:, 1:2] == 30000
+        query = input_ids[:, 1:2] == self.query_marker_id
         mask = torch.where(query, torch.ones_like(attention_mask), attention_mask)
         x = self.embedding_norm(self.embedding_projection(self.table(input_ids)))
         for block in self.blocks:

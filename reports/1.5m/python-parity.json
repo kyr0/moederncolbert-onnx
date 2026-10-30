@@ -1,0 +1,197 @@
+{
+  "passed": true,
+  "model_id": "VAGOsolutions/SauerkrautLM-MoEdernColBERT-1.5M",
+  "revision": "9d360b8b88ae11bea5784bf9012ff509fdd5c2da",
+  "repo_id": "kyr0/SauerkrautLM-MoEdernColBERT-1.5M-ONNX",
+  "environment": {
+    "platform": "macOS-26.7.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.11.17",
+    "onnxruntime": "1.31.1",
+    "torch": "2.6.0"
+  },
+  "fixture": {
+    "description": "Small hand-authored integration fixture, not a retrieval benchmark. Relevance labels are explicit; cross-language matching is intentional.",
+    "queries": 24,
+    "documents": 24
+  },
+  "exact_tolerance": {
+    "token": 0.0001,
+    "score": 0.001
+  },
+  "precisions": {
+    "fp32": {
+      "contract": {
+        "parity": "exact"
+      },
+      "graph": {
+        "file": "model_fp32.onnx",
+        "bytes": 6294481,
+        "sha256": "0180f74acd68411260f9dd28c6f518bb8b1c9176caa3dbbd965abffa6b69c883",
+        "opsets": {
+          "ai.onnx": 17
+        },
+        "quantization": {
+          "weights": "FP32",
+          "activations": "FP32"
+        }
+      },
+      "top1_relevance_accuracy": 1.0,
+      "vs_upstream": {
+        "max_absolute_error": 6.332993507385254e-07,
+        "mean_token_cosine": 1.0,
+        "minimum_token_cosine": 0.9999998807907104
+      },
+      "raw_dynamic_shapes": [
+        {
+          "batch": 1,
+          "sequence": 3,
+          "max_absolute_error": 1.601874828338623e-07
+        },
+        {
+          "batch": 2,
+          "sequence": 7,
+          "max_absolute_error": 2.384185791015625e-07
+        },
+        {
+          "batch": 3,
+          "sequence": 31,
+          "max_absolute_error": 4.78699803352356e-07
+        },
+        {
+          "batch": 1,
+          "sequence": 32,
+          "max_absolute_error": 2.682209014892578e-07
+        },
+        {
+          "batch": 2,
+          "sequence": 127,
+          "max_absolute_error": 1.0128132998943329e-06
+        },
+        {
+          "batch": 1,
+          "sequence": 511,
+          "max_absolute_error": 7.003545761108398e-07
+        },
+        {
+          "batch": 2,
+          "sequence": 512,
+          "max_absolute_error": 8.046627044677734e-07
+        },
+        {
+          "batch": 3,
+          "sequence": 512,
+          "max_absolute_error": 8.046627044677734e-07
+        }
+      ],
+      "passed": true
+    },
+    "fp16": {
+      "contract": {
+        "parity": "quality",
+        "mean_token_cosine": 0.999,
+        "top1_agreement": 0.95,
+        "top5_overlap": 0.9
+      },
+      "graph": {
+        "file": "model_fp16.onnx",
+        "bytes": 3239914,
+        "sha256": "f82e7a372695b82fe5de4c4a7033c538084128a2e787540f6515075ffba49d47",
+        "opsets": {
+          "ai.onnx": 17
+        },
+        "quantization": {
+          "weights": "FP16",
+          "activations": "FP16 inside the graph; FP32 inputs and outputs"
+        }
+      },
+      "top1_relevance_accuracy": 1.0,
+      "vs_fp32_all_cases": {
+        "max_absolute_error": 0.09361252188682556,
+        "mean_token_cosine": 0.9999021291732788,
+        "minimum_token_cosine": 0.9488154649734497
+      },
+      "vs_fp32_retrieval_tokens": {
+        "max_absolute_error": 0.06459629535675049,
+        "mean_token_cosine": 0.999857485294342,
+        "minimum_token_cosine": 0.9635826945304871
+      },
+      "top1_agreement": 1.0,
+      "top5_overlap": 1.0,
+      "max_score_error": 0.10191801190376282,
+      "passed": true
+    },
+    "q8": {
+      "contract": {
+        "parity": "exact",
+        "mean_token_cosine": 0.98,
+        "top1_agreement": 0.95,
+        "top5_overlap": 0.9
+      },
+      "graph": {
+        "file": "model_q8.onnx",
+        "bytes": 2016962,
+        "sha256": "7d709c97fd59c8eaea361faeb20f55c7a61a9c718587f2f4d3023dcce77e8d11",
+        "opsets": {
+          "ai.onnx": 17
+        },
+        "quantization": {
+          "weights": "per-output-channel signed INT8 linear weights; row-wise INT8 token table",
+          "activations": "FP32 (weights are dequantized; no INT8 compute)",
+          "router": "FP32"
+        }
+      },
+      "top1_relevance_accuracy": 1.0,
+      "vs_fp32_all_cases": {
+        "max_absolute_error": 0.14631542563438416,
+        "mean_token_cosine": 0.9984685778617859,
+        "minimum_token_cosine": 0.8691691160202026
+      },
+      "vs_fp32_retrieval_tokens": {
+        "max_absolute_error": 0.14631542563438416,
+        "mean_token_cosine": 0.9970678091049194,
+        "minimum_token_cosine": 0.8691691160202026
+      },
+      "top1_agreement": 1.0,
+      "top5_overlap": 0.975,
+      "max_score_error": 0.28997793048620224,
+      "passed": true
+    },
+    "int8": {
+      "contract": {
+        "parity": "quality",
+        "mean_token_cosine": 0.98,
+        "top1_agreement": 0.95,
+        "top5_overlap": 0.9
+      },
+      "graph": {
+        "file": "model_int8.onnx",
+        "bytes": 2113134,
+        "sha256": "f72b690d68e4783991fa879e21a73143b98ffe93c3e2250084a1e870e5982f9d",
+        "opsets": {
+          "ai.onnx": 17
+        },
+        "quantization": {
+          "weights": "per-channel signed INT8 linear weights; row-wise INT8 token table",
+          "activations": "dynamic UINT8 at quantized MatMuls, computed per batch at run time",
+          "router": "FP32"
+        }
+      },
+      "top1_relevance_accuracy": 1.0,
+      "vs_fp32_all_cases": {
+        "max_absolute_error": 0.14309284090995789,
+        "mean_token_cosine": 0.9967933893203735,
+        "minimum_token_cosine": 0.8347882628440857
+      },
+      "vs_fp32_retrieval_tokens": {
+        "max_absolute_error": 0.14309284090995789,
+        "mean_token_cosine": 0.9943442940711975,
+        "minimum_token_cosine": 0.8430670499801636
+      },
+      "top1_agreement": 1.0,
+      "top5_overlap": 0.9666666666666668,
+      "max_score_error": 0.4639764130115509,
+      "passed": true
+    }
+  }
+}

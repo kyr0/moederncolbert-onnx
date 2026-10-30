@@ -1,7 +1,7 @@
 [project]
 name = "moederncolbert-onnx"
 version = "0.1.0"
-description = "Reproducible MoEdernColBERT FP32 and Q8 ONNX export with Python and JavaScript parity"
+description = "Pinned MoEdernColBERT 1.5M and 27M ONNX exports in five precisions, with upstream and cross-runtime parity checks"
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
 dependencies = [
@@ -13,10 +13,15 @@ dependencies = [
   "safetensors>=0.5,<1",
   "numpy>=1.26,<3",
   "huggingface-hub>=0.34,<2",
+  "onnx-ir>=0.1,<1",
 ]
 
 [dependency-groups]
-dev = ["pytest>=8,<10", "ruff>=0.12,<1"]
+dev = [
+    "pytest>=8,<10",
+    "pytest-cov>=6,<8",
+    "ruff>=0.12,<1",
+]
 
 [project.scripts]
 moedern-onnx = "moederncolbert_onnx.cli:main"

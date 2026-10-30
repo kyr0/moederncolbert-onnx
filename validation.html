@@ -3,9 +3,10 @@
 <script type="module">
 import { createBrowserEncoder } from './src/browser.ts';
 import { verifyEncoders } from './scripts/parity-check.mjs';
-window.runParity = async () => {
-  const response = await fetch('/fixtures/parity.json');
+window.runParity = async repo => {
+  const response = await fetch(`/fixtures/${repo}.json`);
+  if (!response.ok) throw new Error(`Parity fixture for ${repo}: HTTP ${response.status}`);
   const fixture = await response.json();
-  return verifyEncoders(precision => createBrowserEncoder('/models/', { precision, wasmPath: '/ort/' }), fixture);
+  return verifyEncoders(precision => createBrowserEncoder(`/models/${repo}/`, { precision, wasmPath: '/ort/' }), fixture);
 };
 </script></body></html>

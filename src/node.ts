@@ -1,3 +1,4 @@
+// Node.js entry: onnxruntime-node on the CPU. It reads files from disk; integrity checks stay in the core.
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import * as ort from 'onnxruntime-node';
@@ -20,5 +21,5 @@ export async function createNodeEncoder(directory: string, options: { precision?
       },
       dispose: () => session.release(),
     };
-  }, options.precision);
+  }, options.precision, `onnxruntime-node@${ort.env.versions.node}/cpu`);
 }

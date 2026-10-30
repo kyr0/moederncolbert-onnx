@@ -1,0 +1,22 @@
+name: verify
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Pinned checkpoints (about 115 MB); the key changes whenever a pinned hash changes.
+      - uses: actions/cache@v4
+        with:
+          path: upstream
+          key: upstream-${{ hashFiles('src/moederncolbert_onnx/source.py') }}
+      - run: make setup PLAYWRIGHT_FLAGS=--with-deps
+      - run: make verify

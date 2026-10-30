@@ -21,3 +21,14 @@ upstream/__pycache__/
 /artifacts/
 # ONNX Runtime writes this telemetry session file into the CWD when it cannot persist its device ID
 :memory:.ses
+.env
+var/*
+tmp/*
+output/*
+input/*
+.DS_Store
+.vae/SWARM_STATUS.yaml
+coverage/
+.cache/
+.coverage
+!input/rerank.json

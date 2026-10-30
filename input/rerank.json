@@ -1,0 +1,16 @@
+{
+  "description": "End-to-end consumer input: each query names the passage index that must rank first.",
+  "passages": [
+    "Die Zugspitze ist mit 2962 Metern der höchste Berg Deutschlands.",
+    "Paris is the capital and largest city of France.",
+    "Berlin ist die Hauptstadt der Bundesrepublik Deutschland.",
+    "A bicycle has two wheels and is powered by pedals.",
+    "Water boils at 100 degrees Celsius at sea level.",
+    "El Amazonas es el río más caudaloso del mundo."
+  ],
+  "queries": [
+    { "text": "Wie hoch ist die Zugspitze?", "expected": 0 },
+    { "text": "What is the capital of France?", "expected": 1 },
+    { "text": "At what temperature does water boil?", "expected": 4 }
+  ]
+}
