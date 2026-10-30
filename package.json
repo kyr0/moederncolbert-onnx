@@ -1,0 +1,57 @@
+{
+  "name": "moederncolbert-onnx",
+  "version": "0.1.0",
+  "description": "MoEdernColBERT token encoding and MaxSim reranking in Node and browsers",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "files": ["dist", "NOTICE"],
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./node": {
+      "types": "./dist/node.d.mts",
+      "import": "./dist/node.mjs"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.mts",
+      "import": "./dist/browser.mjs"
+    }
+  },
+  "scripts": {
+    "build": "pkgroll",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests-js/*.test.mjs",
+    "test:node": "node scripts/verify-node.mjs",
+    "test:browser": "node scripts/verify-browser.mjs",
+    "demo:node": "node examples/node.mjs",
+    "demo": "node scripts/prepare-demo.mjs && vite --host 127.0.0.1",
+    "demo:build": "node scripts/prepare-demo.mjs && vite build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "~5.9.3",
+    "pkgroll": "^2.25.2",
+    "vite": "^7.3.0",
+    "playwright": "1.55.1"
+  },
+  "dependencies": {
+    "@huggingface/tokenizers": "0.2.0",
+    "onnxruntime-web": "1.30.0"
+  },
+  "optionalDependencies": {
+    "onnxruntime-node": "1.30.0"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "packageManager": "bun@1.4.4",
+  "trustedDependencies": [
+    "onnxruntime-node",
+    "protobufjs"
+  ]
+}

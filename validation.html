@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><title>Runtime parity harness</title><link rel="icon" href="data:,"></head>
+<body><p>Automated WASM parity harness. Use the main page for the interactive demonstration.</p>
+<script type="module">
+import { createBrowserEncoder } from './src/browser.ts';
+import { verifyEncoders } from './scripts/parity-check.mjs';
+window.runParity = async () => {
+  const response = await fetch('/fixtures/parity.json');
+  const fixture = await response.json();
+  return verifyEncoders(precision => createBrowserEncoder('/models/', { precision, wasmPath: '/ort/' }), fixture);
+};
+</script></body></html>

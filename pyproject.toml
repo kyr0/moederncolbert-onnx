@@ -1,0 +1,40 @@
+[project]
+name = "moederncolbert-onnx"
+version = "0.1.0"
+description = "Reproducible MoEdernColBERT FP32 and Q8 ONNX export with Python and JavaScript parity"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "torch==2.6.0",
+  "transformers>=5.3,<6",
+  "sentence-transformers>=6.1,<7",
+  "onnx>=1.17,<2",
+  "onnxruntime>=1.21,<2",
+  "safetensors>=0.5,<1",
+  "numpy>=1.26,<3",
+  "huggingface-hub>=0.34,<2",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.12,<1"]
+
+[project.scripts]
+moedern-onnx = "moederncolbert_onnx.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.9,<0.14"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100

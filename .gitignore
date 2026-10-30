@@ -1,0 +1,23 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+node_modules/
+public/
+web-dist/
+.pytest_cache/
+.ruff_cache/
+*.log
+upstream/__pycache__/
+
+# Pinned upstream checkpoints (re-downloaded and hash-checked by `make setup`) and generated graphs
+/upstream/
+/artifacts/
+# ONNX Runtime writes this telemetry session file into the CWD when it cannot persist its device ID
+:memory:.ses

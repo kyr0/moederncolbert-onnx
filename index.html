@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoEdernColBERT · Local reranking</title><link rel="icon" href="data:,"></head>
+<body><main>
+  <header><span class="eyebrow">1.5M PARAMETERS · RUNS IN YOUR BROWSER</span>
+    <h1>Small model.<br>Token-level retrieval.</h1>
+    <p>Encode a query and candidate passages locally. Compare FP32 and Q8 with ColBERT MaxSim scoring.</p>
+  </header>
+  <section class="controls"><label>Model precision<select id="precision"><option value="q8">Q8 · weight-only</option><option value="fp32">FP32 · reference export</option></select></label>
+    <label>Query<input id="query" value="Wie hoch ist die Zugspitze?" autocomplete="off"></label>
+  </section>
+  <label>Candidate passages <span class="hint">One passage per line</span><textarea id="documents" rows="9" spellcheck="false"></textarea></label>
+  <div class="actions"><button id="run">Rank passages</button><label class="check"><input id="truncate" type="checkbox">Allow truncation beyond 32 query / 512 document tokens</label></div>
+  <p id="status" role="status" aria-live="polite">Loading sample passages…</p>
+  <ol id="results" aria-label="Ranked results"></ol>
+  <footer>Documents are encoded once per model and cached during this session. Scores are relevance scores, not probabilities. This demonstration is a candidate reranking stage for defuss-vectorsearch; its token vectors belong in a separate cache from Winzling's dense vectors.</footer>
+</main><script type="module" src="/examples/browser.ts"></script></body></html>
