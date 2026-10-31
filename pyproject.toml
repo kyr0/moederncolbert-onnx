@@ -5,7 +5,7 @@ description = "Pinned MoEdernColBERT 1.5M and 27M ONNX exports in five precision
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
 dependencies = [
-  "torch==2.6.0",
+  "torch==2.13.0",
   "transformers>=5.3,<6",
   "sentence-transformers>=6.1,<7",
   "onnx>=1.17,<2",
